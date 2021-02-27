@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width= , initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .active {
+            background-color: red;
+        }
+        
+        .message-box {
+            padding: 10px 20px;
+        }
+        
+        .success {
+            background: green;
+            border: 1px solid green;
+        }
+        
+        .waring {
+            background: red;
+            border: 1px solid red;
+        }
+        
+        .message-box-close {
+            float: right;
+        }
+        /* 动画相关样式 */
+        
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+        /* 过度定义 */
+        
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity 1.5s;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+</head>
+
+
+
+<body>
+    <div id="app" :title="title">
+        {{title}}123
+        <heading :level="1">{{title}}</heading>
+        <!-- @close='isShow=$event' -->
+        <!-- @update:show="isShow" -->
+        <message class="success" :show.sync="isShow">
+            <template v-slot:title="slotProps">
+                <div>
+                     <h2>{{slotProps.title}}</h2>   
+                </div>
+            </template>
+            <!-- 默认的插槽 -->
+            新增课程成功！
+        </message>
+        <message class="waring" :show.sync="isWarn">
+            <template v-slot:title="slotProps">
+                <div>
+                     <h2>{{slotProps.title}}</h2>   
+                </div>
+            </template>
+            <!-- 默认的插槽 -->
+            新增课程失败！
+        </message>
+        <!-- <div @click="selected(item)" :style="{'background-color':selectedCourse==item?'#ddd':'#ccc'}" :class="{active:selectedCourse==item}" v-for="(item, index) in courses" :key="item">
+            {{item}}
+        </div> -->
+        <course-list :courses="courses"></course-list>
+
+        <course-add v-model="course" @add-course="addCourse2"></course-add>
+
+        <button @click="addCourse">添加</button>
+        <button @click="$bus.$emit('message-close')">清空提示框</button>
+        <p><input v-permission:foo.add.sub="'admin'" v-focus v-model="price" type="text">
+            <button @click="batchUpdate">batchUpdate</button>
+            <button @click="deleteUpdate">deleteUpdate</button>
+        </p>
+        <!-- 默认情况下 -->
+        <!-- <course-add :value='course' @input="course=$event" :courses="courses"></course-add> -->
+        <!-- <div @click="click2">
+            <div @click.capture="capture">
+                capture
+                <button @click.stop="click1">
+                  ad
+                  <div @click.self="asd">asds</div>
+                </button>
+                <button @click.once="once">once</button>
+                <button @click.prevent="onSubmit">123</button>
+                <button @click.stop.prevent="onSubmit">123</button>
+                <button @click.stop.prevent>123</button>
+            </div>
+
+        </div> -->
+        <input v-model="course" @click.stop="addCourse" /> {{course}}
+        <p>总数:{{total}}</p>
+        <p>总数:{{totalCourses}}</p>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./MyPlugin.js"></script>
+    <script>
+        const role = 'user'
+        Vue.prototype.$bus = new Vue()
+        Vue.component('heading', {
+            functional: true,
+            name: 'Heading',
+            props: {
+                level: {
+                    type: Number,
+                },
+            },
+            render(h, context) {
+                console.log('context', context)
+                    // snabbdom
+                return h('h' + context.props.level, context.children)
+            },
+        })
+        Vue.component('message', {
+            props: ['show'],
+            // css动画  enter-active-class="animated bounceIn" leave-active-class="animated bounceOut"
+            // js动画
+            template: `
+                <transition name="fade" @before-enter="beforeEnter" @enter="enter" 
+                @before-leave="beforeLeave" @leave="leave"
+                >
+                    <div class="message-box" v-if="show">
+                    <!-- 通过slot获取传入的内容 -->
+                    <slot name="title" title="来自message的标题" >默认标题</slot>
+                    <slot></slot>
+                    <button class="message-box-close" @click="$emit('update:show',false)" >X</button>
+                    </div>
+                </transition>
+            `,
+            mounted() {
+                this.$bus.$on('message-close', () => {
+                    this.$emit('update:show', false)
+                })
+            },
+            methods: {
+                beforeEnter(el) {
+                    // 动画的初始状态
+                    console.log(el)
+                    el.style.opacity = 0
+                },
+                enter(el, done) {
+                    // 浏览器的回流激活动画
+                    document.body.offsetHeight;
+                    // 动画的结束状态
+                    el.style.opacity = 1
+                    el.addEventListener('transitionend', done)
+                },
+                beforeLeave(el) {
+                    // 动画的初始状态
+                    console.log(el)
+                    el.style.opacity = 1
+                },
+                leave(el, done) {
+                    // 浏览器的回流激活动画
+                    document.body.offsetHeight;
+                    // 动画的结束状态
+                    el.style.opacity = 0
+                    el.addEventListener('transitionend', done)
+                },
+            },
+        })
+        Vue.component('course-add', {
+                // <button @click="addCourse" >添加</button>
+                template: `
+                <div>
+                    <input ref="addInput" :value="value"  @input="onInput" @keydown.enter="addCourse" >
+                  
+                </div>
+            `,
+                props: {
+                    value: {
+                        type: String,
+                        default: ''
+                    },
+                },
+                data() {
+                    return {
+                        // course: ''
+                    }
+                },
+                mounted() {
+                    // this.$refs.addInput.focus();
+                    console.log(222)
+                },
+                methods: {
+                    onInput(e) {
+                        this.$emit('input', e.target.value)
+                    },
+                    addCourse(e) {
+                        // this.$emit('add-course', this.course)
+                        // this.course = ''
+                    }
+                },
+
+            })
+            // 
+
+        Vue.filter('currency', function(value) {
+            return value
+        })
+        Vue.directive('focus', {
+            inserted(el, binding) {
+                console.log(binding)
+                el.focus()
+            }
+        })
+        Vue.directive('permission', {
+            inserted(el, binding) {
+                console.log(binding)
+                if (binding.value != role) {
+                    el.parentElement.removeChild(el)
+                }
+            }
+        })
+        const app = new Vue({
+            el: "#app",
+            data() {
+                return {
+                    title2: 'asdasd',
+                    title: 'hello world',
+                    course: '',
+                    selectedCourse: 'vue.js',
+                    courses: [{
+                        title: 'vue.js'
+                    }, {
+                        title: 'index.html'
+                    }],
+                    totalCourses: 0,
+                    isShow: false,
+                    isWarn: false,
+                    price: 0,
+                    foo: {
+                        foo: 'foo',
+                    }
+                }
+            },
+            computed: {
+                total() {
+                    // 缓存 如果值没有发生变化 页面不会重新渲染
+                    return this.courses.length
+                },
+            },
+            watch: {
+                courses: {
+                    immediate: true,
+                    deep: true,
+                    handler(newValue, oldValue) {
+                        this.totalCourses = newValue.length + '门'
+                    }
+                }
+            },
+            mounted() {
+                this.batchUpdate()
+            },
+
+            methods: {
+                batchUpdate() {
+                    this.courses.forEach(element => {
+                        Vue.set(
+                                element,
+                                'price',
+                                this.price
+                            )
+                            // element.price = Math.random()
+                    });
+                    console.log('this.courses', this.courses)
+                },
+                deleteUpdate() {
+                    this.courses.forEach(element => {
+                        Vue.delete(
+                                element,
+                                'price',
+                            )
+                            // element.price = Math.random()
+                    });
+                    console.log('this.courses', this.courses)
+                },
+                selected(e) {
+                    this.selectedCourse = e
+                },
+                addCourse(e) {
+                    if (this.course) {
+                        this.courses.push({
+                            title: this.course
+                        })
+                        console.log(this.courses)
+                        this.course = ''
+                        this.isShow = true
+                    } else {
+                        this.isWarn = true
+                    }
+
+                },
+                addCourse2(e) {
+                    this.courses.push(e)
+                    this.course = ''
+                },
+                click1(e) {
+                    console.log(1)
+                },
+                click2(e) {
+                    console.log(2)
+                },
+                onSubmit(e) {
+                    console.log(e)
+                },
+                capture(e) {
+                    console.log('capture')
+                },
+                asd(e) {
+                    console.log('asd')
+                },
+                once(e) {
+                    console.log('once')
+                },
+            },
+        })
+        setTimeout(() => {
+            app.title = "mull"
+        }, 1000);
+        console.log(app.$options.render)
+    </script>
+</body>
+
+</html>

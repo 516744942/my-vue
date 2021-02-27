@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width= , initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .active {
+            background-color: red;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <div id="app" :title="title">
+        {{title}}
+        <div @click="selected(item)" :style="{'background-color':selectedCourse==item?'#ddd':'#ccc'}" :class="{active:selectedCourse==item}" v-for="(item, index) in courses" :key="item">
+            {{item}}
+        </div>
+        <div @click="click2">
+            <div @click.capture="capture">
+                capture
+                <button @click.stop="click1">
+                  ad
+                  <div @click.self="asd">asds</div>
+                </button>
+                <button @click.once="once">once</button>
+                <button @click.prevent="onSubmit">123</button>
+                <button @click.stop.prevent="onSubmit">123</button>
+                <button @click.stop.prevent>123</button>
+            </div>
+
+        </div>
+        <input v-model="course" @click.stop="addCourse" /> {{course}}
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data() {
+                return {
+                    title: 'hello world',
+                    course: 'asd',
+                    selectedCourse: 'vue.js',
+                    courses: ['vue.js', 'index.html']
+                }
+            },
+            methods: {
+                selected(e) {
+                    this.selectedCourse = e
+                },
+                addCourse(e) {
+                    this.courses.push(e.target.value)
+                    this.course = ''
+                },
+                click1(e) {
+                    console.log(1)
+                },
+                click2(e) {
+                    console.log(2)
+                },
+                onSubmit(e) {
+                    console.log(e)
+                },
+                capture(e) {
+                    console.log('capture')
+                },
+                asd(e) {
+                    console.log('asd')
+                },
+                once(e) {
+                    console.log('once')
+                },
+            },
+        })
+        setTimeout(() => {
+            app.title = "mull"
+        }, 1000);
+    </script>
+</body>
+
+</html>
