@@ -25,8 +25,8 @@ describe('Kaikeba.vue', () => {
 
   test('挂载之后data应该是开课吧', () => {
     const wrapper = mount(Kaikeba)
-    const vm = wrapper.vm
-    expect(vm.message).toBe('开课吧')
+    const vm = wrapper.vm  // 组件实例
+    expect(vm.message).toBe('开课吧')  // create 之后是开课吧
   })
 
   test('按钮点击之后', () => {

@@ -96,3 +96,69 @@ function resolve(dir) {
 ### 检查  vue inspect > output.json
 ### 查看规则 vue inspect --rules 
 ### 查看规则 vue inspect --rule svg
+
+
+### 环境变量和模式
+1. development  dev
+1. production   build
+1. test         test
+
+#### 定义⼀个开发时可⽤的配置项 创建.env.dev
+
+.env.dev
+```
+# 只能⽤于服务端
+foo=bar
+# 可⽤于客户端
+VUE_APP_DONG=dong
+```
+#### 修改mode选项覆盖模式名称，package.json
+"serve": "vue-cli-service serve --mode dev"
+vue.config
+console.log(process.env.foo)
+console.log(process.env.VUE_APP_DONG)
+
+bar
+dong
+
+在vue中使用
+undefined
+dong
+
+### 两种路由
+constantRoutes  默认路由可直接访问
+asyncRoutes    后者中定义的路由需要登录
+
+
+### mock easy-mock
+
+### 跨域 doServer
+
+### 单元测试 test
+
+```
+// 测试套件
+describe('Kaikeba.vue', () => {
+  // 测试用例
+  test('测试add函数', () => {
+    // 断言
+    // expect(add(1,3)).toBe(3)
+    expect(add(1,3)).toBe(4)
+    expect(add(-2,3)).toBe(1)
+  })
+  
+  test('要求组件必须有created选项', () => {
+    expect(typeof Kaikeba.created).toBe('function')
+
+    const defData = Kaikeba.data()
+    expect(defData.message).toBe('vue-text')
+  })
+
+```
+
+### 测试套件
+import {mount} from '@vue/test-utils'
+### collectCoverageFrom
+看是否可靠
+
+<!-- coverage 里面会有一个报表 -->

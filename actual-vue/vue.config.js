@@ -7,6 +7,11 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+console.log(process.env.foo)
+console.log(process.env.VUE_APP_DONG)
+
+
+
 const bodyParser = require("body-parser");
 
 module.exports = {
@@ -14,6 +19,7 @@ module.exports = {
   devServer: {
     port: port,
     proxy: {
+      // 可以 配置多个
       // 代理 /dev-api/user/login 到 http://127.0.0.1:3000/user/login
       [process.env.VUE_APP_BASE_API]: {
         target: `http://127.0.0.1:3000/`,

@@ -27,6 +27,10 @@ export default {
           alert(error);
         });
     }
+  },
+  created() {
+    console.log(process.env.foo);
+    console.log(process.env.VUE_APP_DONG);
   }
 };
 </script>

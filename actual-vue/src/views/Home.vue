@@ -28,5 +28,8 @@ export default {
   // created () {
   //   this.$store.state = {};
   // },
+  mounted () {
+    
+  },
 }
 </script>
