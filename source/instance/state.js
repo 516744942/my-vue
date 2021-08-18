@@ -1,7 +1,17 @@
 import { set,del } from '../observer'
 import Watcher from '../observer/watcher'
 
-/**
+
+//
+
+
+
+
+
+export function stateMixin(Vue) {
+  Vue.prototype.$set = set
+  Vue.prototype.$delete = del
+  /**
  * 
  *.1 用法 vm.$watch(exporFn:string|Function,callback:function|Object,
  *options:{
@@ -56,7 +66,4 @@ Vue.prototype.$watch = function (
     watcher.teardown() //拆除
   }
 }
-//
-
-Vue.prototype.$set = set
-Vue.prototype.$delete = del
+}

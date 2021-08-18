@@ -38,6 +38,10 @@ export default class Watcher {
   ) {
     this.vm = vm;
     this.cb = cb;
+    /**
+     * 每当watcher实例添加到vm.watchers中
+     */
+    vm._watchers.push(this)
     if (options) {
       this.deep = !!options.deep
     } else {
@@ -97,7 +101,14 @@ export default class Watcher {
    *  
    */
   addDep(dep: Dep) {
-
+    const id = dep.id
+    if (!this.newDepIds.has(id)) {
+      this.newDepIds.add(id)
+      this.newDeps.push(dep)
+      if (!this.depIds.has(id)) {
+        dep.addSub(this)
+      }
+    }
   }
   // 用户执行这个函数时,实际上执行了watcher.teardown()来取消观察数据
   // 其本质是吧watcher实例从当前正在观察的状态的依赖列表中移除
