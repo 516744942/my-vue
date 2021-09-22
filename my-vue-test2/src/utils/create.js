@@ -8,6 +8,7 @@ function create(Component, props) {
   const Ctor= Vue.extend(Component);
   const comp = new Ctor({propsData:props})
   comp.$mount()
+  console.log('comp',comp)
   document.body.appendChild(comp.$el)
   comp.remove = function() {
     document.body.removeChild(comp.$el)
@@ -18,7 +19,7 @@ function create(Component, props) {
   // const vm = new Vue({
   //   // h是createElement, 返回VNode，是虚拟dom
   //    render(h){
-  //     return  h(Component,{props})
+  //     return  h(Component,{props},children)
   //   },
   //   // 需要挂载才能变成真实dom
   //   // render: h => h(Component, {props}),

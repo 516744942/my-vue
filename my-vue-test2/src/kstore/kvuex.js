@@ -21,11 +21,14 @@ class Store {
       const fn = store._wrappedGetter[key]
       computed[key] = function () {
         return fn(store.state)
-      }
+      } 
+      this.doubleCounter1  ="!23"
       Object.defineProperty(store.getters, key, {
+        enumerable:false,
         get: () => {
           return store._vm[key]
         }
+        
       })
     })
 

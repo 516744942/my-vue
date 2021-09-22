@@ -46,7 +46,7 @@ import VmodelTest from "./VmodelTest.vue";
 import RenderDemo from "./RenderDemo.vue";
 import Functional from "./Functional.vue";
 import TransitionTest from "./TransitionTest.vue";
-import Todos from "./Todos.vue";
+import Todos from "./todos/Todos.vue";
 import mitt from "mitt";
 export const emitter = mitt();
 export default {

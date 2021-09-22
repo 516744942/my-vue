@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>netxt-tick-test</title>
+</head>
+
+<body>
+    <script>
+        let loading = false
+
+        function a(params) {
+            console.log(1)
+        }
+
+        function b(params) {
+            console.log(2)
+        }
+
+        function c(params) {
+            console.log(3)
+        };
+        let arr = [];
+        const p = Promise.resolve();
+        setTimeout(() => {
+            loading = true
+            p.then(flushCallbacks);
+        }, 100);
+        arr.push(a);
+        arr.push(b);
+        arr.push(c);
+
+        function flushCallbacks() {
+            console.log(loading)
+            const copies = arr.slice(0)
+            arr.length = 0
+            for (var i = 0; i < copies.length; i++) {
+                copies[i]()
+            }
+            console.log(arr)
+            console.log(copies)
+        }
+    </script>
+</body>
+
+</html>
